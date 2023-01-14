@@ -1,6 +1,6 @@
 # MotionCLIP-MultiModel
 
-在环境配置方面，我们完全沿用了MotionCLIP源码的工作环境，若需复现可按照如下指示配置环境，对于我们工作的复现指令已放在最后。
+在环境配置方面，我们完全沿用了MotionCLIP源码的工作环境，若需复现可按照如下指示配置环境，关于我们工作的复现指令已放在最后。
 
 ![teaser](visuals/clouds_white_bg.png)
 
