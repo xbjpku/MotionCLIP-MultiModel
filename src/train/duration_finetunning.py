@@ -2,7 +2,7 @@ import os
 import torch
 
 from torch.utils.data import DataLoader
-from src.utils.trainer import train
+from src.train.trainer import train
 from src.utils.tensors import collate
 import src.utils.fixseed  # noqa
 
@@ -40,9 +40,10 @@ def main():
     datasets.pop("test")
 
     print("Restore weights..")
+    os.makedirs(parameters["folder"], exist_ok=True)
     checkpointpath = os.path.join(folder, checkpointname)
     state_dict = torch.load(checkpointpath, map_location=device)
-    model.load_state_dict(state_dict)
+    model.load_state_dict(state_dict, strict=False)
     
     # optimizer
     optimizer = torch.optim.AdamW(model.parameters(), lr=parameters["lr"])

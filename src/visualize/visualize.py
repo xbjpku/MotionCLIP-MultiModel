@@ -276,6 +276,16 @@ def viz_clip_text(model, text_grid, epoch, params, folder):
 
     # save_pkl(generation['output'], generation['output_xyz'], texts, finalpath.replace('.gif', '.pkl'))
 
+    print("-----------------------------------------------------------------------------")
+    generation['output_xyz'] = generation['output_xyz']*-1
+    print(generation['output'].shape)
+    print(generation['output_xyz'].shape)
+    pos_info = generation['output_xyz'].cpu().detach().numpy()
+    pos_info_path = 'pos-info/zzy.npy'
+    print(pos_info[0][0].shape)
+    np.save(pos_info_path, pos_info[0][0])
+    print("-----------------------------------------------------------------------------")
+
     print("Generate the videos..")
     frames = generate_by_video({}, {}, generation,
                                lambda x: str(x), params, w, h, tmp_path, mode='text')

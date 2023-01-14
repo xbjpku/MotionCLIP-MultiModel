@@ -16,6 +16,7 @@ class Rotation2xyz:
         if pose_rep == "xyz":
             return x
 
+        
         if mask is None:
             mask = torch.ones((x.shape[0], x.shape[-1]), dtype=bool, device=x.device)
 

@@ -20,6 +20,7 @@ class MOTIONCLIP(nn.Module):
 
         self.encoder = encoder
         self.decoder = decoder
+        #self.synthetic = synthetic
 
         self.outputxyz = outputxyz
 
@@ -91,6 +92,7 @@ class MOTIONCLIP(nn.Module):
                 if d == 'image':
                     features = self.clip_model.encode_image(
                         batch['clip_images']).float()  # preprocess is done in dataloader
+                    
                 elif d == 'text':
                     texts = clip.tokenize(batch['clip_text']).to(self.device)
                     features = self.clip_model.encode_text(texts).float()
@@ -121,6 +123,8 @@ class MOTIONCLIP(nn.Module):
                     if d == 'image':
                         features = self.clip_model.encode_image(
                             batch['clip_images']).float()  # preprocess is done in dataloader
+                        
+                        # features = self.clip_model.encode_image(self.synthetic (batch['clip_images'])).float()  # 
                     elif d == 'text':
                         texts = clip.tokenize(batch['clip_text']).to(self.device)
                         features = self.clip_model.encode_text(texts).float()

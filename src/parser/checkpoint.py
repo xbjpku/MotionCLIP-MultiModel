@@ -5,15 +5,15 @@ from .tools import load_args
 
 def parser():
     parser = ArgumentParser()
-    parser.add_argument("checkpointname")
+    parser.add_argument("--checkpointname")
     
     opt = parser.parse_args()
     
     folder, checkpoint = os.path.split(opt.checkpointname)
-    parameters = load_args(os.path.join(folder, "opt.yaml"))
+    parameters = load_args(os.path.join(folder, "myopt.yaml"))
 
     adding_cuda(parameters)
-    epoch = int(checkpoint.split("_")[-1].split('.')[0])
+    epoch = 10
     return parameters, folder, checkpoint, epoch
 
 

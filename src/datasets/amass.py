@@ -180,40 +180,75 @@ class AMASS(Dataset):
         # split sequences
         for seq_idx in range(n_sequences):
             n_sub_seq = self.db['thetas'][seq_idx].shape[0] // seq_len
-            if n_sub_seq == 0: continue
-            n_frames_in_use = n_sub_seq * seq_len
-            joints3d = np.split(self.db['joints3d'][seq_idx][:n_frames_in_use], n_sub_seq)
-            poses = np.split(self.db['thetas'][seq_idx][:n_frames_in_use], n_sub_seq)
-            self._joints3d.extend(joints3d)
-            self._poses.extend(poses)
-            self._num_frames_in_video.extend([seq_len] * n_sub_seq)
+            # if n_sub_seq == 0: continue
+            # n_frames_in_use = n_sub_seq * seq_len
+            # joints3d = np.split(self.db['joints3d'][seq_idx][:n_frames_in_use], n_sub_seq)
+            # poses = np.split(self.db['thetas'][seq_idx][:n_frames_in_use], n_sub_seq)
+            # self._joints3d.extend(joints3d)
+            # self._poses.extend(poses)
+            # self._num_frames_in_video.extend([seq_len] * n_sub_seq)
 
+            # if 'action_cat' in self.db:
+            #     self._actions_cat.extend(np.split(self.db['action_cat'][seq_idx][:n_frames_in_use], n_sub_seq))
+
+            # if self.use_betas:
+            #     self._betas.extend(np.split(self.db['betas'][seq_idx][:n_frames_in_use], n_sub_seq))
+            # if self.use_gender:
+            #     self._genders.extend([str(self.db['genders'][seq_idx]).replace("b'female'", "female").replace("b'male'",
+            #                                                                                                   "male")] * n_sub_seq)
+            # if self.use_body_features:
+            #     self._heights.extend([self.db['heights'][seq_idx]] * n_sub_seq)
+            #     self._masses.extend([self.db['masses'][seq_idx]] * n_sub_seq)
+            # if 'clip_images' in self.db.keys():
+            #     images = [np.squeeze(e) for e in np.split(self.db['clip_images'][seq_idx][:n_sub_seq], n_sub_seq)]
+            #     processed_images = [self.clip_preprocess(Image.fromarray(img)) for img in images]
+            #     self._clip_images.extend(processed_images)
+            # if self.clip_label_text in self.db:
+            #     self._clip_texts.extend(np.split(self.db[self.clip_label_text][seq_idx][:n_frames_in_use], n_sub_seq))
+            # if 'clip_pathes' in self.db:
+            #     self._clip_pathes.extend(np.split(self.db['clip_pathes'][seq_idx][:n_sub_seq], n_sub_seq))
+            # if 'clip_images_emb' in self.db.keys():
+            #     self._clip_images_emb.extend(np.split(self.db['clip_images_emb'][seq_idx][:n_sub_seq], n_sub_seq))
+
+            # actions = [0] * n_sub_seq
+            # self._actions.extend(actions)
+
+            if n_sub_seq == 0: continue
+            self._joints3d.append(self.db['joints3d'][seq_idx])
+            self._poses.append(self.db['thetas'][seq_idx])
+            self._num_frames_in_video.append(self.db['thetas'][seq_idx].shape[0])
+
+
+            if 'clip_images' in self.db.keys():
+                
+                images = [np.squeeze(e) for e in np.split(self.db['clip_images'][seq_idx][:n_sub_seq], n_sub_seq)]
+                
+                # processed_images = [self.clip_preprocess(Image.fromarray(img)) for img in images]
+                # self._clip_images.append(processed_images)
+                # synthetic_image = MLP(images)
+                # print(np.array(images).shape)
+                synthetic_image = np.array(images).mean(axis=(1,2,3))
+                processed_image = self.clip_preprocess(Image.fromarray(synthetic_image))
+                self._clip_images.append(processed_image)
+                
             if 'action_cat' in self.db:
-                self._actions_cat.extend(np.split(self.db['action_cat'][seq_idx][:n_frames_in_use], n_sub_seq))
+                self._actions_cat.append(self.db['action_cat'][seq_idx])
 
             if self.use_betas:
-                self._betas.extend(np.split(self.db['betas'][seq_idx][:n_frames_in_use], n_sub_seq))
+                self._betas.append(self.db['betas'][seq_idx])
             if self.use_gender:
-                self._genders.extend([str(self.db['genders'][seq_idx]).replace("b'female'", "female").replace("b'male'",
-                                                                                                              "male")] * n_sub_seq)
+                self._genders.append(str(self.db['genders'][seq_idx]).replace("b'female'", "female").replace("b'male'", "male"))
             if self.use_body_features:
-                self._heights.extend([self.db['heights'][seq_idx]] * n_sub_seq)
-                self._masses.extend([self.db['masses'][seq_idx]] * n_sub_seq)
-            if 'clip_images' in self.db.keys():
-                images = [np.squeeze(e) for e in np.split(self.db['clip_images'][seq_idx][:n_sub_seq], n_sub_seq)]
-                processed_images = [self.clip_preprocess(Image.fromarray(img)) for img in images]
-                self._clip_images.extend(processed_images)
+                self._heights.append(self.db['heights'][seq_idx])
+                self._masses.append(self.db['masses'][seq_idx])
             if self.clip_label_text in self.db:
-                self._clip_texts.extend(np.split(self.db[self.clip_label_text][seq_idx][:n_frames_in_use], n_sub_seq))
+                self._clip_texts.append(self.db[self.clip_label_text][seq_idx])
             if 'clip_pathes' in self.db:
                 self._clip_pathes.extend(np.split(self.db['clip_pathes'][seq_idx][:n_sub_seq], n_sub_seq))
             if 'clip_images_emb' in self.db.keys():
                 self._clip_images_emb.extend(np.split(self.db['clip_images_emb'][seq_idx][:n_sub_seq], n_sub_seq))
-
-
-
-            actions = [0] * n_sub_seq
-            self._actions.extend(actions)
+               
+            self._actions.extend([0]) 
 
         assert len(self._num_frames_in_video) == len(self._poses) == len(self._joints3d) == len(self._actions)
         if self.use_betas:
@@ -248,7 +283,7 @@ class AMASS(Dataset):
         # }
         # data_size should be [16275369]
         db_file = self.datapath
-        db = joblib.load(db_file)
+        db = joblib.load(db_file) 
 
         if 'clip_images' in db and db['clip_images'][0] is None:  # No images added
             del db['clip_images']

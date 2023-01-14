@@ -22,6 +22,7 @@ def main():
 
     print("Restore weights..")
     checkpointpath = os.path.join(folder, checkpointname)
+    print(checkpointpath)
     state_dict = torch.load(checkpointpath, map_location=parameters["device"])
     load_model_wo_clip(model, state_dict)
 

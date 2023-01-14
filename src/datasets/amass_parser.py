@@ -247,6 +247,9 @@ def read_single_sequence(split_name, dataset_name, folder, seq_name, body_models
             text_proc_labels.append(frame_proc_text_labels)
             action_cat.append(frame_action_cat)
 
+    print(len(clip_images))
+    print(len(thetas))
+    assert 0
 
     # return np.concatenate(thetas, axis=0), np.concatenate(vid_names, axis=0)
     return {
@@ -254,7 +257,7 @@ def read_single_sequence(split_name, dataset_name, folder, seq_name, body_models
         'vid_names': vid_names,
         'thetas': thetas,
         'joints3d': joints3d,
-        'clip_images': clip_images,
+        'clip_images': a,
         'clip_pathes': clip_pathes,
         'text_raw_labels': text_raw_labels,
         'text_proc_labels': text_proc_labels,
