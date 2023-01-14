@@ -1,8 +1,6 @@
-# MotionCLIP
+# MotionCLIP-MultiModel
 
-Official Pytorch implementation of the paper [**"MotionCLIP: Exposing Human Motion Generation to CLIP Space"**](http://arxiv.org/abs/2203.08063).
-
-Please visit our [**webpage**](https://guytevet.github.io/motionclip-page/) for more details.
+在环境配置方面，我们完全沿用了MotionCLIP源码的工作环境，若需复现可按照如下指示配置环境，对于我们工作的复现指令已放在最后。
 
 ![teaser](visuals/clouds_white_bg.png)
 
@@ -112,34 +110,17 @@ python -m src.utils.action_classifier ./exps/classes-model/checkpoint_0200.pth.t
 
 
 
-## Train your own
+## Finetunning
 
-~~**NOTE (11/MAY/22):** 
-The paper model is not perfectly reproduced using this code. We are working to resolve this issue. 
-The trained model [checkpoint](https://drive.google.com/file/d/1VTIN0kJd2-0NW1sKckKgXddwl4tFZVDp/view?usp=sharing) we provide does reproduce results.~~ **(Resolved 31/AUG/22)**
-
-To reproduce `paper-model` run:
+To reproduce `my-paper-model` run:
 ```bash
-python -m src.train.train --clip_text_losses cosine --clip_image_losses cosine --pose_rep rot6d \
---lambda_vel 100 --lambda_rc 100 --lambda_rcxyz 100 \
---jointstype vertices --batch_size 20 --num_frames 60 --num_layers 8 \
---lr 0.0001 --glob --translation --no-vertstrans --latent_dim 512 --num_epochs 100 --snapshot 10 \
---device <GPU DEVICE ID> \
---dataset amass \
---datapath ./data/amass_db/amass_30fps_db.pt \
---folder ./exps/my-paper-model
+python -m src.train.duration_finetunning --checkpointname ./exps/paper-model/checkpoint_0100.pth.tar
 ```
 
-To reproduce `classes-model` run:
+## Unfreezing root
+To reproduce the gif whose roots are unfrozen:
 ```bash
-python -m src.train.train --clip_text_losses cosine --clip_image_losses cosine --pose_rep rot6d \
---lambda_vel 95 --lambda_rc 95 --lambda_rcxyz 95 \
---jointstype vertices --batch_size 20 --num_frames 60 --num_layers 8 \
---lr 0.0001 --glob --translation --no-vertstrans --latent_dim 512 --num_epochs 200 --snapshot 10 \
---device <GPU DEVICE ID> \
---dataset babel \
---datapath ./data/amass_db/babel_30fps_db.pt \
---folder ./exps/my-classes-model
+python -m src.visualize.text2motion ./exps/my-paper-model/retraincheckpoint_0030.pth.tar --vertstrans --input_file assets/paper_texts.txt
 ```
 
 ## Acknowledgment
